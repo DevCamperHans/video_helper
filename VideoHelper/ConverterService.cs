@@ -10,7 +10,10 @@ public class ConverterService{
         _adapter = adapter;
     }
 
-    public void Process(VideoConfig config){
+    public async Task Process(VideoConfig config){
+
+        var start = DateTime.Now;
+        Console.WriteLine("Start processing...");
         foreach(var file in config.Files)
         {
             var fileName = Path.GetFileName(file);
@@ -18,9 +21,15 @@ public class ConverterService{
             var fileExtension = Path.GetExtension(file);
             var path = Path.GetFullPath(file).Replace(fileName, "");
 
-            if(config.RotationInDegree != null){
-                _adapter.Process(path, fileName, fileNameWithoutExtension + "_rotated" + fileExtension, config);
+            if(config.Marker != null){
+                fileNameWithoutExtension = fileNameWithoutExtension.Replace(config.Marker, "");
             }
+
+            await _adapter.Process(path, fileName, fileNameWithoutExtension + "_processed" + fileExtension, config);
         }
+        var end = DateTime.Now;
+
+        
+        Console.WriteLine($"Finished. Processing tokes {(end - start).TotalSeconds}s");
     }
 }

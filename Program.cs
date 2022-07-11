@@ -10,6 +10,6 @@ public class Program
 
         var converter = new ConverterService(new FfmpegAdapter());
 
-        converter.Process(config);
+        Task.WaitAll(converter.Process(config));
     }   
 }
