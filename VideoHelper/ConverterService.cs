@@ -19,7 +19,7 @@ public class ConverterService{
             var path = Path.GetFullPath(file).Replace(fileName, "");
 
             if(config.RotationInDegree != null){
-                _adapter.Rotate(path, fileName, fileNameWithoutExtension + "_rotated" + fileExtension);
+                _adapter.Process(path, fileName, fileNameWithoutExtension + "_rotated" + fileExtension, config);
             }
         }
     }

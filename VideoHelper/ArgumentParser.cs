@@ -14,6 +14,10 @@ public static class ArgumentParser{
         var indexMarker = arguments.ToList().IndexOf("-m");
         var indexDirectory = arguments.ToList().IndexOf("-d");
         
+        VideoScaleOptions? scaleOptions = null;
+        var indexWidth = arguments.ToList().IndexOf("-w");
+        var indexHight = arguments.ToList().IndexOf("-h");
+
         if(IsArgumentOfGivenIndexValid(arguments, indexFiles))
         {
             for(int i = indexFiles + 1; i < arguments.Length && !arguments[i].StartsWith("-"); i++){
@@ -33,6 +37,15 @@ public static class ArgumentParser{
         {
             rotation = arguments[indexRotation + 1];
         }
+
+        if(IsArgumentOfGivenIndexValid(arguments, indexWidth) && IsArgumentOfGivenIndexValid(arguments, indexHight))
+        {
+            var width = arguments[indexWidth + 1];
+            var hight = arguments[indexHight + 1];
+
+            scaleOptions = new VideoScaleOptions(width, hight);
+        }
+
 
         if(IsArgumentOfGivenIndexValid(arguments, indexMarker))
         {
@@ -58,7 +71,7 @@ public static class ArgumentParser{
 
         filesToProcess.ToList().ForEach(it => Console.WriteLine(it));    
 
-        return new VideoConfig(filesToProcess, rotation);
+        return new VideoConfig(filesToProcess, rotation, scaleOptions);
     }
 
 
