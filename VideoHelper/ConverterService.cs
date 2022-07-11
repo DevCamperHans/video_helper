@@ -11,9 +11,16 @@ public class ConverterService{
     }
 
     public void Process(VideoConfig config){
+        foreach(var file in config.Files)
+        {
+            var fileName = Path.GetFileName(file);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var fileExtension = Path.GetExtension(file);
+            var path = Path.GetFullPath(file).Replace(fileName, "");
 
-        if(config.Rotate != null){
-            _adapter.Rotate("path", "input", "output");
+            if(config.RotationInDegree != null){
+                _adapter.Rotate(path, fileName, fileNameWithoutExtension + "_rotated" + fileExtension);
+            }
         }
     }
 }

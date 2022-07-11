@@ -1,5 +1,7 @@
 namespace VideoHelper;
 
-public record VideoConfig(string? Rotate = null);
+public record VideoConfig(
+    string[] Files, 
+    string? RotationInDegree = null);
 
 
