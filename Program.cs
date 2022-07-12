@@ -6,10 +6,16 @@ public class Program
     public static void Main(string[] args){
         Console.WriteLine("~~~~~~~~~~~ Video Helper ~~~~~~~~~~~");
 
-        var config = ArgumentParser.Parse(args);
 
         var converter = new ConverterService(new FfmpegAdapter());
+        var configurationService = new ConfigurationService();
 
-        Task.WaitAll(converter.Process(config));
+        var config = ArgumentParser.Parse(args, configurationService);
+
+        if(config.CreateConfig){
+            configurationService.StoreConfig(config);
+        }
+
+        Task.WaitAll(converter.Process(config.VideoConfig));
     }   
 }

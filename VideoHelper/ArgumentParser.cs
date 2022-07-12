@@ -3,8 +3,10 @@ namespace VideoHelper;
 using System.Linq;
 
 public static class ArgumentParser{
-    public static VideoConfig Parse(string[] arguments){
+    public static Configuration Parse(string[] arguments, ConfigurationService configurationService){
 
+        var indexConfig = arguments.ToList().IndexOf("--config");
+        var indexStore = arguments.ToList().IndexOf("-s");
         var indexFiles = arguments.ToList().IndexOf("-f");
         var files = new List<string>();
 
@@ -19,6 +21,22 @@ public static class ArgumentParser{
         VideoScaleOptions? scaleOptions = null;
         var indexWidth = arguments.ToList().IndexOf("-w");
         var indexHight = arguments.ToList().IndexOf("-h");
+
+        
+            
+        string workingDir = Path.GetFullPath(".");
+
+
+        if(IsArgumentOfGivenIndexValid(arguments, indexConfig)){
+            var pathToConfig = arguments[indexConfig + 1];
+            
+            if(File.Exists(pathToConfig))
+            {
+                var videoConfig = configurationService.RestoreConfig(pathToConfig);
+
+                return new Configuration(false, null, videoConfig);
+            }
+        }
 
         if(IsArgumentOfGivenIndexValid(arguments, indexFiles))
         {
@@ -52,8 +70,6 @@ public static class ArgumentParser{
         if(IsArgumentOfGivenIndexValid(arguments, indexMarker))
         {
             marker = arguments[indexMarker + 1];
-            
-            string workingDir = Path.GetFullPath(".");
 
             if(indexDirectory >= 0 && IsArgumentOfGivenIndexValid(arguments, indexDirectory))
             {                
@@ -69,7 +85,6 @@ public static class ArgumentParser{
 
         if(indexAll >= 0)
         {   
-            string workingDir = Path.GetFullPath(".");
 
             if(indexDirectory >= 0 && IsArgumentOfGivenIndexValid(arguments, indexDirectory))
             {                
@@ -89,7 +104,7 @@ public static class ArgumentParser{
 
         filesToProcess.ToList().ForEach(it => Console.WriteLine(it));    
 
-        return new VideoConfig(filesToProcess, rotation, marker, scaleOptions);
+        return new Configuration(indexStore >= 0, indexStore >= 0 ? Path.Join(workingDir, "vh_config.conf") : null, new VideoConfig(filesToProcess, rotation, marker, scaleOptions));
     }
 
 
